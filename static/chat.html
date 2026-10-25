@@ -1,42 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chattie</title>
-    <link rel="stylesheet" href="/static/index.css">
+    <link rel="stylesheet" href="/static/index.css" />
     <script>
-        var ws = new WebSocket("ws://127.0.0.1:8001");
-        function connect(name) {
-            ws.send('{"message": "connect", "name": "' + toString(name) + '"}')
-        }
-        function nameDlg() {
-            const dialog = document.querySelector(".nameDlg");
-            const submit = document.getElementById("nameDlg-submit");
-            const input = document.getElementById("nameDlg-input");
-            dialog.classList.remove("hidden");
-            submit.addEventListener("click", () => {
-                const name = input.value.trim();
+      var ws = new WebSocket("ws://127.0.0.1:8001");
+      function connect(name) {
+        ws.send('{"message": "connect", "name": "' + String(name) + '"}');
+      }
+      function sendMessage(message) {
+        ws.send(
+          JSON.stringify({
+            message: "message_up",
+            data: message,
+          }),
+        );
+      }
 
-                if (name !== "") {
-                    dialog.classList.add("hidden");
-                    connect(name);
-                }
-            })
-        }
+      ws.addEventListener("open", () => {
+        console.log("WebSocket connected");
+      });
 
-        document.addEventListener("DOMContentLoaded", () => {
-            nameDlg()
-        })
+      ws.addEventListener("message", (event) => {
+        try {
+          const obj = JSON.parse(event.data);
+
+          console.log("Received from server:", obj);
+
+          if (obj.message === "message_down") {
+            var messages = document.getElementById("messages");
+            var text = `${obj.data.name}: ${obj.data.message}`;
+            var node = document.createElement("p");
+            var special = obj.data.special;
+            special == "true" ? node.classList.add("special_message") : 1;
+            node.innerText = text;
+            messages.appendChild(node);
+          }
+        } catch (error) {
+          console.error("Invalid server response:", error);
+        }
+      });
+
+      ws.addEventListener("error", (event) => {
+        console.error("WebSocket error:", event);
+      });
+
+      ws.addEventListener("close", () => {
+        console.log("WebSocket disconnected");
+      });
+
+      function nameDlg() {
+        const dialog = document.querySelector(".lightbox");
+        const submit = document.getElementById("nameDlg-submit");
+        const input = document.getElementById("nameDlg-input");
+        const send = document.getElementById("send");
+        const message = document.getElementById("message");
+        dialog.classList.remove("hidden");
+        submit.addEventListener("click", () => {
+          const name = input.value.trim();
+
+          if (name !== "") {
+            dialog.classList.remove("lightbox");
+            dialog.classList.add("hidden");
+            dialog.classList.add("lightbox");
+            connect(name);
+            send.addEventListener("click", (e) => {
+              sendMessage(message.value);
+            });
+          }
+        });
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            submit.click();
+          }
+        });
+      }
+      document.addEventListener("DOMContentLoaded", () => {
+        nameDlg();
+      });
     </script>
-    <link type="stylesheet" href="/static/index.css">
-</head>
-<body>
-    <div class="nameDlg hidden">
+    <link type="stylesheet" href="/static/index.css" />
+  </head>
+  <body>
+    <div class="lightbox hidden">
+      <div class="nameDlg">
         <p>Please type a name</p>
-        <br>
-        <input id="nameDlg-input">&nbsp;
+        <input id="nameDlg-input" type="text" placeholder="Your name" />
         <button id="nameDlg-submit">Done</button>
+      </div>
     </div>
-</body>
+
+    <div id="chat-wrapper">
+      <div id="messages"></div>
+      <div id="bottom_bar">
+        <input type="text" id="message" /><button id="send">Send</button>
+      </div>
+    </div>
+  </body>
 </html>

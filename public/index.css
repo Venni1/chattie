@@ -1,12 +1,62 @@
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .hidden {
-    display: none;
+  display: none !important;
 }
 #wrapper {
-    min-height: 33vh;
-    min-width: 33vh;
+  min-height: 33vh;
+  min-width: 33vh;
+}
+#chat-wrapper {
+    height: 90vh;
+    width: 33vh;
+}
+#messages {
+    height: 90%;
+    overflow: scroll;
+}
+#bottom_bar {
+    height: 10%
+}
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+}
+
+.nameDlg {
+  width: min(350px, calc(100% - 40px));
+  padding: 24px;
+  box-sizing: border-box;
+
+  background: white;
+  color: #222;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.nameDlg p {
+  margin-top: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.nameDlg-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.nameDlg button {
+  margin-top: 12px;
+  cursor: pointer;
 }
