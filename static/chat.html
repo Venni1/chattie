@@ -6,8 +6,7 @@
     <title>Chattie</title>
     <link rel="stylesheet" href="/static/index.css" />
     <script>
-      const protocol = location.protocol === "https:" ? "wss:" : "ws:";
-      var ws = new WebSocket(`${protocol}//${location.host}:8000`);
+      var ws = new WebSocket(`ws://${location.host}:8000`);
       function connect(name) {
         ws.send('{"message": "connect", "name": "' + String(name) + '"}');
       }
