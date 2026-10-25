@@ -122,5 +122,5 @@ app.get("/chat", (req, res) => {
     res.send(getContents("chat.html", "static"))
 });
 app.listen(port, "0.0.0.0", () => {
-    console.log(`App listening on port ${port}`);
+    console.log(`App listening on port ${port} and 8000`);
 });
