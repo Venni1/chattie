@@ -6,7 +6,8 @@
     <title>Chattie</title>
     <link rel="stylesheet" href="/static/index.css" />
     <script>
-      var ws = new WebSocket("ws://127.0.0.1:8001");
+      const protocol = location.protocol === "https:" ? "wss:" : "ws:";
+      var ws = new WebSocket(`${protocol}//${location.host}:8000`);
       function connect(name) {
         ws.send('{"message": "connect", "name": "' + String(name) + '"}');
       }
@@ -37,6 +38,7 @@
             special == "true" ? node.classList.add("special_message") : 1;
             node.innerText = text;
             messages.appendChild(node);
+            messages.scrollTop = messages.scrollHeight;
           }
         } catch (error) {
           console.error("Invalid server response:", error);
