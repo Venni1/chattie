@@ -1,7 +1,5 @@
-import { json } from 'express';
 import WebSocket, { WebSocketServer } from 'ws';
 
-var CLIENTS = {};
 const websocket = new WebSocketServer({
   port: 8001,
   perMessageDeflate: {
@@ -29,7 +27,7 @@ websocket.getUniqueID = function () {
 };
 
 websocket.on('connection', (ws, req) => {
-    ws.id = wss.getUniqueID();
+    ws.id = websocket.getUniqueID();
 
     websocket.clients.forEach(function each(client) {
         console.log('Client.ID: ' + client.id);
@@ -42,10 +40,11 @@ websocket.on("message", (ws, message) => {
             case "connect":
                 username = message.name
                 ws.username = username
-                websocket.send('{"message": "message_down", data: {"name": "Server", "message": "' + toString(username) + ' just joined! Say hi!" }}')
+                websocket.send('{"message": "message_down", data: {"name": "Server", "message": "' + toString(username) + ' just joined! Say hi!", "special": "true" }}')
                 break;
 
             case "message_up":
+                websocket.send('{"message": "message_down", data: {"name": "' + ws.username + '", "message": "' + toString(username) + '", "special": "false" }}')
 
         
             default:

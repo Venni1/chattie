@@ -4,18 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chattie</title>
+    <link rel="stylesheet" href="/static/index.css">
     <script>
-        var ws = new WebSocket("127.0.0.1:8001");
+        var ws = new WebSocket("ws://127.0.0.1:8001");
         function connect(name) {
             ws.send('{"message": "connect", "name": "' + toString(name) + '"}')
         }
         function nameDlg() {
-            var name = document.getElementsByClassName("nameDlg-hidden")[0];
-            name.className = "nameDlg"
+            const dialog = document.querySelector(".nameDlg");
+            const submit = document.getElementById("nameDlg-submit");
+            const input = document.getElementById("nameDlg-input");
+            dialog.classList.remove("hidden");
+            submit.addEventListener("click", () => {
+                const name = input.value.trim();
+
+                if (name !== "") {
+                    dialog.classList.add("hidden");
+                    connect(name);
+                }
+            })
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            document.getElementsByClassName("nameDlg-hidden")
+            nameDlg()
         })
     </script>
     <link type="stylesheet" href="/static/index.css">
