@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chattie</title>
+    <script>
+        var ws = new WebSocket("127.0.0.1:8001");
+        function connect(name) {
+            ws.send('{"message": "connect", "name": "' + toString(name) + '"}')
+        }
+        function nameDlg() {
+            var name = document.getElementsByClassName("nameDlg-hidden")[0];
+            name.className = "nameDlg"
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementsByClassName("nameDlg-hidden")
+        })
+    </script>
+    <link type="stylesheet" href="/static/index.css">
+</head>
+<body>
+    <div class="nameDlg hidden">
+        <p>Please type a name</p>
+        <br>
+        <input id="nameDlg-input">&nbsp;
+        <button id="nameDlg-submit">Done</button>
+    </div>
+</body>
+</html>
