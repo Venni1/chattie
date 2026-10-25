@@ -3,6 +3,7 @@ const fs = require("node:fs");
 const { join } = require("node:path");
 const { WebSocket, WebSocketServer } = require("ws");
 var app = express();
+const server = http.createServer(app);
 // Static files
 app.use("/static", express.static(join(__dirname, "public")));
 // HTML
@@ -14,24 +15,7 @@ var port = 80;
 
 // WebSocket setup
 
-const websocket = new WebSocketServer({
-  port: 8000,
-  perMessageDeflate: {
-    zlibDeflateOptions: {
-      chunkSize: 1024,
-      memLevel: 7,
-      level: 3,
-    },
-    zlibInflateOptions: {
-      chunkSize: 10 * 1024,
-    },
-    clientNoContextTakeover: true,
-    serverNoContextTakeover: true,
-    serverMaxWindowBits: 10,
-    concurrencyLimit: 10,
-    threshold: 1024,
-  },
-});
+const websocket = new WebSocketServer({ server });
 function broadcast(data) {
   const message = JSON.stringify(data);
 
@@ -121,6 +105,6 @@ app.get("/chat", (req, res) => {
     res.type('html')
     res.send(getContents("chat.html", "static"))
 });
-app.listen(port, "0.0.0.0", () => {
-    console.log(`App listening on port ${port} and 8000`);
+server.listen(port, "0.0.0.0", () => {
+    console.log(`Server listening on port ${port}`);
 });
